@@ -468,11 +468,10 @@ function Wheel() {
 }
 
 function createPlayerIndicator() {
-  // Ajustado para apontar para a frente (+X) no sistema local do carro
   const points = [
-    new THREE.Vector3(-12, 14, 0),
-    new THREE.Vector3(12, 0, 0),   // Vértice do V apontando para a frente
-    new THREE.Vector3(-12, -14, 0)
+    new THREE.Vector3(-12, 12, 18),  
+    new THREE.Vector3(0, 0, 0),      
+    new THREE.Vector3(-12, -12, 18)  
   ];
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -483,8 +482,7 @@ function createPlayerIndicator() {
 
   const lineV = new THREE.Line(geometry, material);
 
-  // Alinhada acima do teto do veículo
-  lineV.position.set(0, 0, 48); 
+  lineV.position.set(0, 0, 38); 
 
   return lineV;
 }
