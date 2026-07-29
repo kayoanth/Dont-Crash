@@ -19,7 +19,15 @@
 
   <div class="vignette-overlay"></div>
 
-  <!-- MENU INICIAL (CENTRALIZADO) -->
+  <!-- INDICADOR DO CARRO DO JOGADOR NA UI -->
+  <div id="player-indicator-ui">
+    <div class="indicator-badge">
+      <span class="car-icon">🏎️</span>
+      <span class="player-tag">SEU CARRO: VERMELHO</span>
+    </div>
+  </div>
+
+  <!-- MENU INICIAL -->
   <div id="start-container" class="overlay-menu">
     <div class="menu-card">
       <h1>Don't Crash!</h1>
@@ -75,7 +83,6 @@
         <span>Música</span>
       </button>
 
-      <!-- BOTÃO LOW GRAPHICS -->
       <button class="audio-btn btn-toggle-graphics" aria-label="Alternar Qualidade Gráfica">
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>Low Graphic</span>
