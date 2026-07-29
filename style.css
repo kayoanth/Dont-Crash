@@ -58,14 +58,14 @@ canvas {
 #final-score, #high-score {
   font-size: 28px; 
   font-weight: 900;
-  color: #ffa100;
+  color: #ff3b30; /* Mudado para vermelho */
   margin-left: 6px;
 }
 
 .menu-card h1, .game-over-card h2 {
   margin: 0 0 12px 0;
   font-size: 32px;
-  color: #ffa100;
+  color: #ff3b30; /* Mudado para vermelho */
   letter-spacing: 0.5px;
 }
 
@@ -80,8 +80,8 @@ canvas {
   padding: 14px 38px;
   font-size: 16px;
   font-weight: 800;
-  background: #ffa100;
-  color: #000;
+  background: #ff3b30; /* Mudado para vermelho */
+  color: #ffffff;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -90,7 +90,7 @@ canvas {
 }
 
 #btn-start-game:hover, #btn-restart:hover {
-  background: #ffb733;
+  background: #ff5252; /* Mudado para vermelho claro ao passar o mouse */
   transform: scale(1.03);
 }
 
@@ -205,15 +205,15 @@ canvas {
 .audio-btn.muted .icon-on { display: none; }
 .audio-btn.muted .icon-off { display: block; }
 
-/* Estilo do modo Low Graphics Ativo */
+/* Estilo do modo Low Graphics Ativo em Vermelho */
 .btn-toggle-graphics.low-graphics-active {
-  background: rgba(255, 161, 0, 0.85) !important;
-  color: #000;
+  background: rgba(255, 59, 48, 0.85) !important;
+  color: #ffffff;
   border-color: #ffffff !important;
 }
 
 .btn-toggle-graphics.low-graphics-active svg {
-  fill: #000;
+  fill: #ffffff;
 }
 
 #pause-container, #restart-container {
@@ -248,8 +248,8 @@ canvas {
   padding: 12px 32px;
   font-size: 15px;
   font-weight: bold;
-  background: #ffa100;
-  color: #000;
+  background: #ff3b30; /* Mudado para vermelho */
+  color: #ffffff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
