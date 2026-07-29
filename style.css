@@ -47,7 +47,6 @@ canvas {
   max-width: 420px;
 }
 
-
 .game-over-card p {
   margin: 0 0 16px 0;
   color: #d0d5dd;
@@ -132,19 +131,17 @@ canvas {
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  z-index: 10;
+  z-index: 35 !important;
 }
 
 #controls-card {
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(15, 18, 25, 0.95) !important;
   color: #ffffff;
   padding: 18px 22px;
   border-radius: 16px;
   font-size: 13px;
   line-height: 1.7;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 #controls-card strong {
@@ -171,10 +168,8 @@ canvas {
 }
 
 .audio-btn {
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 18, 25, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 12px;
   color: white;
   padding: 10px 14px;
@@ -190,7 +185,7 @@ canvas {
   transition: background 0.2s, transform 0.1s;
 }
 
-.audio-btn:hover { background: rgba(0, 0, 0, 0.85); }
+.audio-btn:hover { background: rgba(0, 0, 0, 0.85) !important; }
 .audio-btn:active { transform: scale(0.95); }
 
 .audio-btn svg {
@@ -204,11 +199,22 @@ canvas {
 
 .audio-btn.muted {
   opacity: 0.6;
-  background: rgba(200, 50, 50, 0.4);
+  background: rgba(200, 50, 50, 0.4) !important;
 }
 
 .audio-btn.muted .icon-on { display: none; }
 .audio-btn.muted .icon-off { display: block; }
+
+/* Estilo do modo Low Graphics Ativo */
+.btn-toggle-graphics.low-graphics-active {
+  background: rgba(255, 161, 0, 0.85) !important;
+  color: #000;
+  border-color: #ffffff !important;
+}
+
+.btn-toggle-graphics.low-graphics-active svg {
+  fill: #000;
+}
 
 #pause-container, #restart-container {
   position: absolute;
@@ -216,9 +222,7 @@ canvas {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.75);
   display: none;
   justify-content: center;
   align-items: center;
@@ -239,8 +243,6 @@ canvas {
 
 .pause-card h1 { margin: 0 0 8px 0; font-size: 26px; }
 .pause-card p { margin: 0 0 20px 0; color: #ccc; font-size: 13px; }
-
-.pause-audio-controls { display: flex; gap: 12px; margin-bottom: 24px; }
 
 #btn-resume {
   padding: 12px 32px;
@@ -290,52 +292,11 @@ canvas {
   color: white;
   display: flex; justify-content: center; align-items: center;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-}
-
-
-#pause-container {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background: rgba(0, 0, 0, 0.75); 
-}
-
-
-#controls-wrapper {
-  z-index: 35 !important; 
-}
-
-#controls-card,
-.audio-btn {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background: rgba(15, 18, 25, 0.95) !important; 
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .pedal svg { width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2.5; }
 #btn-decel { background: rgba(235, 77, 75, 0.75); }
 #btn-accel { background: rgba(46, 204, 113, 0.75); width: 80px; height: 80px; }
-
-#btn-pause { display: none; }
-
-
-@media (min-width: 769px) {
-  .mobile-controls { display: none !important; }
-  #controls-wrapper { display: flex; }
-}
-
-@media (max-width: 768px) {
-  .mobile-controls { display: flex; }
-  #controls-card { display: none; }
-  #btn-pause { display: flex; }
-
-  #controls-wrapper {
-    left: 50%;
-    bottom: 115px;
-    transform: translateX(-50%);
-  }
-
 
 #btn-pause {
   display: none; 
@@ -345,8 +306,6 @@ canvas {
   min-height: 42px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
   padding: 0;
@@ -372,19 +331,15 @@ canvas {
   pointer-events: none;
 }
 
+@media (min-width: 769px) {
+  .mobile-controls { display: none !important; }
+  #controls-wrapper { display: flex; }
+}
 
 @media (max-width: 768px) {
-  .mobile-controls { 
-    display: flex !important; 
-  }
-  
-  #controls-card { 
-    display: none !important; 
-  }
-
-  #btn-pause { 
-    display: inline-flex !important; 
-  }
+  .mobile-controls { display: flex !important; }
+  #controls-card { display: none !important; }
+  #btn-pause { display: inline-flex !important; }
 
   #top-left-header {
     top: 16px;
@@ -403,6 +358,7 @@ canvas {
     right: 16px;
     font-size: 22px;
   }
+
   #controls-wrapper {
     left: 50%;
     bottom: 110px;
@@ -411,9 +367,11 @@ canvas {
 
   #audio-controls {
     flex-direction: row;
-    gap: 10px;
+    gap: 8px;
   }
-}
 
-  #audio-controls { flex-direction: row; }
+  .audio-btn {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
 }
