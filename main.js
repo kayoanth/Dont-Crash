@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+// Detecta se o dispositivo é mobile
 const isMobile = window.innerWidth <= 768;
 
 // ==========================================
@@ -22,7 +23,8 @@ const arcCenterX =
 const arcAngle3 = Math.acos(arcCenterX / innerTrackRadius);
 const arcAngle4 = Math.acos(arcCenterX / outerTrackRadius);
 
-const vehicleColors = [0xffa100, 0x00d2d3, 0xff5252, 0x10ac84, 0x54a0ff];
+// Lista de cores para os veículos concorrentes (NPCs) - sem o vermelho primário
+const vehicleColors = [0x00d2d3, 0x10ac84, 0x54a0ff, 0x9b59b6, 0xf1c40f];
 const speed = 0.0017;
 const playerAngleInitial = Math.PI;
 
@@ -452,7 +454,7 @@ function addSceneryDecoration() {
 }
 
 // ==========================================
-// 5. MODELOS 3D (VEÍCULOS)
+// 5. MODELOS 3D (VEÍCULOS & SETA INDICADORA)
 // ==========================================
 function Wheel() {
   const wheel = new THREE.Mesh(
@@ -464,7 +466,34 @@ function Wheel() {
   return wheel;
 }
 
-function Car(overrideColor) {
+function createPlayerIndicator() {
+  const indicatorGroup = new THREE.Group();
+
+  const arrowShape = new THREE.Shape();
+  arrowShape.moveTo(0, 18);
+  arrowShape.lineTo(14, -8);
+  arrowShape.lineTo(6, -8);
+  arrowShape.lineTo(6, -22);
+  arrowShape.lineTo(-6, -22);
+  arrowShape.lineTo(-6, -8);
+  arrowShape.lineTo(-14, -8);
+  arrowShape.closePath();
+
+  const extrudeSettings = { depth: 4, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 1, bevelThickness: 1 };
+  const geometry = new THREE.ExtrudeGeometry(arrowShape, extrudeSettings);
+  const material = createMaterial({ color: 0xffffff });
+
+  const arrowMesh = new THREE.Mesh(geometry, material);
+  arrowMesh.rotation.x = Math.PI / 2;
+  arrowMesh.rotation.y = Math.PI / 2;
+  
+  indicatorGroup.add(arrowMesh);
+  indicatorGroup.position.z = 55;
+
+  return indicatorGroup;
+}
+
+function Car(overrideColor, isPlayer = false) {
   const car = new THREE.Group();
   const color = overrideColor || pickRandom(vehicleColors);
 
@@ -512,6 +541,11 @@ function Car(overrideColor) {
   const frontWheel = Wheel();
   frontWheel.position.x = 18;
   car.add(frontWheel);
+
+  if (isPlayer) {
+    const indicator = createPlayerIndicator();
+    car.add(indicator);
+  }
 
   return car;
 }
@@ -657,7 +691,7 @@ function getOuterField(mapWidth, mapHeight) {
 // ==========================================
 // 7. INICIALIZAÇÃO DO JOGO
 // ==========================================
-const playerCar = Car(0xffa100);
+const playerCar = Car(0xff3333, true);
 scene.add(playerCar);
 
 renderMap();
@@ -1109,26 +1143,6 @@ function getTruckSideTexture(color) {
 
   return new THREE.CanvasTexture(canvas);
 }
-
-const vignette = document.createElement("div");
-vignette.style.position = "fixed";
-vignette.style.top = "0";
-vignette.style.left = "0";
-vignette.style.width = "100vw";
-vignette.style.height = "100vh";
-vignette.style.pointerEvents = "none";
-vignette.style.zIndex = "5";
-vignette.style.background = `linear-gradient(
-  to bottom,
-  rgba(31, 59, 31, 0.65) 0%,
-  rgba(44, 80, 44, 0.7) 0%,
-  rgba(89, 145, 72, 0) 30%,
-  rgba(0, 0, 0, 0) 70%,
-  rgba(61, 110, 61, 0.74) 100%,
-  rgba(70, 117, 70, 0.34) 100%
-)`;
-
-document.body.appendChild(vignette);
 
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
