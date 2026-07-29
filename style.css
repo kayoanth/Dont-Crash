@@ -331,6 +331,54 @@ canvas {
   pointer-events: none;
 }
 
+/* INDICADOR DO JOGADOR NO HTML */
+#player-indicator-ui {
+  position: absolute;
+  top: 80px;
+  left: 24px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.indicator-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 24, 33, 0.85);
+  border: 1px solid rgba(255, 59, 48, 0.8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.car-icon {
+  font-size: 16px;
+}
+
+.player-tag {
+  color: #ff3b30;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  #player-indicator-ui {
+    top: 64px;
+    left: 16px;
+  }
+  
+  .indicator-badge {
+    padding: 4px 10px;
+  }
+  
+  .player-tag {
+    font-size: 10px;
+  }
+}
+
 @media (min-width: 769px) {
   .mobile-controls { display: none !important; }
   #controls-wrapper { display: flex; }
