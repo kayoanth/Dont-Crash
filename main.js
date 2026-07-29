@@ -40,6 +40,9 @@ let decelerate = false;
 let isGameStarted = false;
 let highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
 
+// Estado de Gráficos Baixos
+let isLowGraphics = localStorage.getItem('lowGraphics') === 'true';
+
 // Estados de Mudo
 let isEngineMuted = localStorage.getItem('engineMuted') === 'true';
 let isMusicMuted = localStorage.getItem('musicMuted') === 'true';
@@ -53,6 +56,7 @@ const btnStartGame = document.getElementById("btn-start-game");
 // Referências da UI
 const btnEngineList = document.querySelectorAll('.btn-toggle-engine');
 const btnMusicList = document.querySelectorAll('.btn-toggle-music');
+const btnLowGraphicsList = document.querySelectorAll('.btn-toggle-graphics');
 const btnPause = document.getElementById('btn-pause');
 const btnResume = document.getElementById('btn-resume');
 const finalScoreElement = document.getElementById("final-score");
@@ -73,7 +77,7 @@ bgMusic.loop = true;
 bgMusic.volume = 0.25; 
 
 // ==========================================
-// CONTROLES DE PAUSA & ÁUDIO
+// CONTROLES DE PAUSA & ÁUDIO & GRÁFICOS
 // ==========================================
 function updateAudioUI() {
   btnEngineList.forEach(btn => {
@@ -87,6 +91,43 @@ function updateAudioUI() {
   });
 }
 updateAudioUI();
+
+function updateGraphicsUI() {
+  btnLowGraphicsList.forEach(btn => {
+    if (isLowGraphics) btn.classList.add('low-graphics-active');
+    else btn.classList.remove('low-graphics-active');
+  });
+}
+updateGraphicsUI();
+
+function toggleLowGraphics() {
+  isLowGraphics = !isLowGraphics;
+  localStorage.setItem('lowGraphics', isLowGraphics);
+  updateGraphicsUI();
+  applyGraphicsSettings();
+}
+
+function applyGraphicsSettings() {
+  renderer.shadowMap.enabled = !isLowGraphics;
+  dirLight.castShadow = !isLowGraphics;
+
+  scene.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = !isLowGraphics;
+      child.receiveShadow = !isLowGraphics;
+
+      if (Array.isArray(child.material)) {
+        child.material.forEach((mat) => {
+          mat.needsUpdate = true;
+        });
+      } else if (child.material) {
+        child.material.needsUpdate = true;
+      }
+    }
+  });
+}
+
+btnLowGraphicsList.forEach(btn => btn.addEventListener('click', toggleLowGraphics));
 
 function toggleEngineSound() {
   isEngineMuted = !isEngineMuted;
@@ -262,6 +303,13 @@ function updateEngineSound() {
   }
 }
 
+function createMaterial(config) {
+  if (isLowGraphics) {
+    return new THREE.MeshBasicMaterial(config);
+  }
+  return new THREE.MeshLambertMaterial(config);
+}
+
 // ==========================================
 // 3. CENA, CÂMERA & LUZ
 // ==========================================
@@ -273,7 +321,7 @@ scene.add(ambientLight);
 
 const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
 dirLight.position.set(300, -600, 800);
-dirLight.castShadow = true;
+dirLight.castShadow = !isLowGraphics;
 
 dirLight.shadow.mapSize.width = isMobile ? 512 : 2048;
 dirLight.shadow.mapSize.height = isMobile ? 512 : 2048;
@@ -325,7 +373,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: !isMobile });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = !isLowGraphics;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 document.body.appendChild(renderer.domElement);
@@ -343,18 +391,18 @@ function addSceneryDecoration() {
 
     const trunk = new THREE.Mesh(
       new THREE.BoxGeometry(16, 16, 40),
-      new THREE.MeshLambertMaterial({ color: 0x3e2723 })
+      createMaterial({ color: 0x3e2723 })
     );
     trunk.position.z = 20;
     
-    trunk.castShadow = !isMobile;
-    trunk.receiveShadow = !isMobile;
+    trunk.castShadow = !isMobile && !isLowGraphics;
+    trunk.receiveShadow = !isMobile && !isLowGraphics;
     tree.add(trunk);
 
     const color = forestGreens[Math.floor(Math.random() * forestGreens.length)];
     const canopy = new THREE.Mesh(
       new THREE.DodecahedronGeometry(50, 1),
-      new THREE.MeshLambertMaterial({ color: color })
+      createMaterial({ color: color })
     );
     
     canopy.scale.set(1.2 + Math.random() * 0.4, 1.2 + Math.random() * 0.4, 0.7 + Math.random() * 0.3);
@@ -362,8 +410,8 @@ function addSceneryDecoration() {
     canopy.rotation.z = Math.random() * Math.PI;
     canopy.rotation.x = (Math.random() - 0.5) * 0.2;
     
-    canopy.castShadow = !isMobile;
-    canopy.receiveShadow = !isMobile;
+    canopy.castShadow = !isMobile && !isLowGraphics;
+    canopy.receiveShadow = !isMobile && !isLowGraphics;
     tree.add(canopy);
 
     return tree;
@@ -409,10 +457,10 @@ function addSceneryDecoration() {
 function Wheel() {
   const wheel = new THREE.Mesh(
     new THREE.BoxGeometry(12, 33, 12),
-    new THREE.MeshLambertMaterial({ color: 0x333333 })
+    createMaterial({ color: 0x333333 })
   );
   wheel.position.z = 6;
-  wheel.castShadow = true;
+  wheel.castShadow = !isLowGraphics;
   return wheel;
 }
 
@@ -422,11 +470,11 @@ function Car(overrideColor) {
 
   const main = new THREE.Mesh(
     new THREE.BoxGeometry(60, 30, 15),
-    new THREE.MeshLambertMaterial({ color })
+    createMaterial({ color })
   );
   main.position.z = 12;
-  main.castShadow = true;
-  main.receiveShadow = true;
+  main.castShadow = !isLowGraphics;
+  main.receiveShadow = !isLowGraphics;
   car.add(main);
 
   const carFrontTexture = getCarFrontTexture(color);
@@ -441,20 +489,20 @@ function Car(overrideColor) {
   const carLeftSideTexture = getCarSideTexture(color);
   carLeftSideTexture.flipY = false;
 
-  const cabinMat = new THREE.MeshLambertMaterial({ color });
+  const cabinMat = createMaterial({ color });
 
   const cabin = new THREE.Mesh(new THREE.BoxGeometry(33, 24, 12), [
-    new THREE.MeshLambertMaterial({ map: carFrontTexture }),
-    new THREE.MeshLambertMaterial({ map: carBackTexture }),
-    new THREE.MeshLambertMaterial({ map: carLeftSideTexture }),
-    new THREE.MeshLambertMaterial({ map: carRightSideTexture }),
+    createMaterial({ map: carFrontTexture }),
+    createMaterial({ map: carBackTexture }),
+    createMaterial({ map: carLeftSideTexture }),
+    createMaterial({ map: carRightSideTexture }),
     cabinMat,
     cabinMat,
   ]);
   cabin.position.x = -6;
   cabin.position.z = 25.5;
-  cabin.castShadow = true;
-  cabin.receiveShadow = true;
+  cabin.castShadow = !isLowGraphics;
+  cabin.receiveShadow = !isLowGraphics;
   car.add(cabin);
 
   const backWheel = Wheel();
@@ -474,20 +522,20 @@ function Truck() {
 
   const base = new THREE.Mesh(
     new THREE.BoxGeometry(100, 25, 5),
-    new THREE.MeshLambertMaterial({ color: 0x333333 })
+    createMaterial({ color: 0x333333 })
   );
   base.position.z = 10;
-  base.castShadow = true;
+  base.castShadow = !isLowGraphics;
   truck.add(base);
 
   const cargo = new THREE.Mesh(
     new THREE.BoxGeometry(75, 30, 40),
-    new THREE.MeshLambertMaterial({ color: 0xf5f6fa })
+    createMaterial({ color: 0xf5f6fa })
   );
   cargo.position.x = -15;
   cargo.position.z = 30;
-  cargo.castShadow = true;
-  cargo.receiveShadow = true;
+  cargo.castShadow = !isLowGraphics;
+  cargo.receiveShadow = !isLowGraphics;
   truck.add(cargo);
 
   const truckFrontTexture = getTruckFrontTexture(color);
@@ -498,21 +546,21 @@ function Truck() {
   const truckSideTextureLeft = getTruckSideTexture(color);
   truckSideTextureLeft.flipY = false;
 
-  const cabinMat = new THREE.MeshLambertMaterial({ color });
+  const cabinMat = createMaterial({ color });
 
   const cabin = new THREE.Mesh(new THREE.BoxGeometry(25, 30, 30), [
-    new THREE.MeshLambertMaterial({ map: truckFrontTexture }),    
+    createMaterial({ map: truckFrontTexture }),    
     cabinMat,                                                    
-    new THREE.MeshLambertMaterial({ map: truckSideTextureLeft }), 
-    new THREE.MeshLambertMaterial({ map: truckSideTexture }),     
+    createMaterial({ map: truckSideTextureLeft }), 
+    createMaterial({ map: truckSideTexture }),     
     cabinMat,                                                     
     cabinMat                                                      
   ]);
   
   cabin.position.x = 35;
   cabin.position.z = 25;
-  cabin.castShadow = true;
-  cabin.receiveShadow = true;
+  cabin.castShadow = !isLowGraphics;
+  cabin.receiveShadow = !isLowGraphics;
   truck.add(cabin);
 
   const wheel1 = Wheel();
@@ -535,20 +583,20 @@ function Truck() {
 // ==========================================
 function renderMap() {
   const groundGeo = new THREE.PlaneGeometry(20000, 20000);
-  const groundMat = new THREE.MeshLambertMaterial({ color: 0x2d5a27 });
+  const groundMat = createMaterial({ color: 0x2d5a27 });
   const ground = new THREE.Mesh(groundGeo, groundMat);
   ground.position.z = -0.1;
-  ground.receiveShadow = true;
+  ground.receiveShadow = !isLowGraphics;
   scene.add(ground);
 
   const lineMarkingTexture = getLineMarkings(3000, 3000);
   const planeGeometry = new THREE.PlaneGeometry(3000, 3000);
-  const planeMaterial = new THREE.MeshLambertMaterial({
+  const planeMaterial = createMaterial({
     color: 0x546e90,
     map: lineMarkingTexture
   });
   const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.receiveShadow = true;
+  plane.receiveShadow = !isLowGraphics;
   scene.add(plane);
 
   const islandLeft = getLeftIsland();
@@ -562,10 +610,10 @@ function renderMap() {
   );
 
   const fieldMesh = new THREE.Mesh(fieldGeometry, [
-    new THREE.MeshLambertMaterial({ color: 0x269E26 }),
-    new THREE.MeshLambertMaterial({ color: 0x2d1c15 }),
+    createMaterial({ color: 0x269E26 }),
+    createMaterial({ color: 0x2d1c15 }),
   ]);
-  fieldMesh.receiveShadow = true;
+  fieldMesh.receiveShadow = !isLowGraphics;
   scene.add(fieldMesh);
 }
 
@@ -864,6 +912,11 @@ window.addEventListener("keydown", function (event) {
   
   if (key === "v") {
     toggleMusic();
+    return;
+  }
+
+  if (key === "l") {
+    toggleLowGraphics();
     return;
   }
 
