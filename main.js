@@ -305,6 +305,7 @@ function updateEngineSound() {
   }
 }
 
+// Helper para criar materiais respeitando o modo Low Graphics
 function createMaterial(config) {
   if (isLowGraphics) {
     return new THREE.MeshBasicMaterial(config);
@@ -454,7 +455,7 @@ function addSceneryDecoration() {
 }
 
 // ==========================================
-// 5. MODELOS 3D (VEÍCULOS & SETA INDICADORA)
+// 5. MODELOS 3D (VEÍCULOS & SETA INDICADORA 2D)
 // ==========================================
 function Wheel() {
   const wheel = new THREE.Mesh(
@@ -466,31 +467,26 @@ function Wheel() {
   return wheel;
 }
 
+// Seta 2D Minimalista em formato de 'V' branca sobre o carro
 function createPlayerIndicator() {
-  const indicatorGroup = new THREE.Group();
+  const points = [
+    new THREE.Vector3(-14, 12, 0),
+    new THREE.Vector3(0, -12, 0),
+    new THREE.Vector3(14, 12, 0)
+  ];
 
-  const arrowShape = new THREE.Shape();
-  arrowShape.moveTo(0, 18);
-  arrowShape.lineTo(14, -8);
-  arrowShape.lineTo(6, -8);
-  arrowShape.lineTo(6, -22);
-  arrowShape.lineTo(-6, -22);
-  arrowShape.lineTo(-6, -8);
-  arrowShape.lineTo(-14, -8);
-  arrowShape.closePath();
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const material = new THREE.LineBasicMaterial({
+    color: 0xffffff,
+    linewidth: 5 // Visto como linha limpa minimalista
+  });
 
-  const extrudeSettings = { depth: 4, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: 1, bevelThickness: 1 };
-  const geometry = new THREE.ExtrudeGeometry(arrowShape, extrudeSettings);
-  const material = createMaterial({ color: 0xffffff });
+  const lineV = new THREE.Line(geometry, material);
 
-  const arrowMesh = new THREE.Mesh(geometry, material);
-  arrowMesh.rotation.x = Math.PI / 2;
-  arrowMesh.rotation.y = Math.PI / 2;
-  
-  indicatorGroup.add(arrowMesh);
-  indicatorGroup.position.z = 55;
+  // Alinha paralelamente ao teto do veículo (plano XY da rotação)
+  lineV.position.set(0, 0, 48); 
 
-  return indicatorGroup;
+  return lineV;
 }
 
 function Car(overrideColor, isPlayer = false) {
@@ -542,6 +538,7 @@ function Car(overrideColor, isPlayer = false) {
   frontWheel.position.x = 18;
   car.add(frontWheel);
 
+  // Adiciona a seta minimalista 2D em 'V' caso seja o jogador
   if (isPlayer) {
     const indicator = createPlayerIndicator();
     car.add(indicator);
@@ -691,6 +688,7 @@ function getOuterField(mapWidth, mapHeight) {
 // ==========================================
 // 7. INICIALIZAÇÃO DO JOGO
 // ==========================================
+// Carro Vermelho Fixo (0xff3333) e Seta Minimalista 2D em V ativada
 const playerCar = Car(0xff3333, true);
 scene.add(playerCar);
 
