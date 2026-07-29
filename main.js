@@ -469,9 +469,9 @@ function Wheel() {
 
 function createPlayerIndicator() {
   const points = [
-    new THREE.Vector3(-12, 12, 18), 
+    new THREE.Vector3(-12, 0, 25), 
     new THREE.Vector3(0, 0, 0),     
-    new THREE.Vector3(-12, -12, 18) 
+    new THREE.Vector3(-12, 0, 25) 
   ];
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -482,7 +482,7 @@ function createPlayerIndicator() {
 
   const lineV = new THREE.Line(geometry, material);
 
-  lineV.position.set(0, 0, 38); 
+  lineV.position.set(0, 0, 42); 
 
   return lineV;
 }
