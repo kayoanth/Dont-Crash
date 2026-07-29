@@ -467,26 +467,6 @@ function Wheel() {
   return wheel;
 }
 
-function createPlayerIndicator() {
-  const points = [
-    new THREE.Vector3(-12, 0, 25), 
-    new THREE.Vector3(0, 0, 0),     
-    new THREE.Vector3(-12, 0, 25) 
-  ];
-
-  const geometry = new THREE.BufferGeometry().setFromPoints(points);
-  const material = new THREE.LineBasicMaterial({
-    color: 0xffffff,
-    linewidth: 5
-  });
-
-  const lineV = new THREE.Line(geometry, material);
-
-  lineV.position.set(0, 0, 42); 
-
-  return lineV;
-}
-
 function Car(overrideColor, isPlayer = false) {
   const car = new THREE.Group();
   const color = overrideColor || pickRandom(vehicleColors);
@@ -538,7 +518,7 @@ function Car(overrideColor, isPlayer = false) {
 
   // Adiciona a seta minimalista 2D em 'V' caso seja o jogador
   if (isPlayer) {
-    const indicator = createPlayerIndicator();
+    const indicator = ();
     car.add(indicator);
   }
 
