@@ -516,12 +516,6 @@ function Car(overrideColor, isPlayer = false) {
   frontWheel.position.x = 18;
   car.add(frontWheel);
 
-  // Adiciona a seta minimalista 2D em 'V' caso seja o jogador
-  if (isPlayer) {
-    const indicator = ();
-    car.add(indicator);
-  }
-
   return car;
 }
 
