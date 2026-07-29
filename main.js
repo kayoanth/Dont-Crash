@@ -467,23 +467,23 @@ function Wheel() {
   return wheel;
 }
 
-// Seta 2D Minimalista em formato de 'V' branca sobre o carro
 function createPlayerIndicator() {
+  // Ajustado para apontar para a frente (+X) no sistema local do carro
   const points = [
-    new THREE.Vector3(-14, 12, 0),
-    new THREE.Vector3(0, -12, 0),
-    new THREE.Vector3(14, 12, 0)
+    new THREE.Vector3(-12, 14, 0),
+    new THREE.Vector3(12, 0, 0),   // Vértice do V apontando para a frente
+    new THREE.Vector3(-12, -14, 0)
   ];
 
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
   const material = new THREE.LineBasicMaterial({
     color: 0xffffff,
-    linewidth: 5 // Visto como linha limpa minimalista
+    linewidth: 5
   });
 
   const lineV = new THREE.Line(geometry, material);
 
-  // Alinha paralelamente ao teto do veículo (plano XY da rotação)
+  // Alinhada acima do teto do veículo
   lineV.position.set(0, 0, 48); 
 
   return lineV;
